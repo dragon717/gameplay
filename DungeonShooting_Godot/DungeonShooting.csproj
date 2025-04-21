@@ -1,0 +1,26 @@
+<Project Sdk="Godot.NET.Sdk/4.4.1">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="src\game\ui\editorTools" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="android\**" />
+    <Compile Remove="excelTool\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="android\**" />
+    <EmbeddedResource Remove="excelTool\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc.Core.Api" Version="2.70.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.70.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
