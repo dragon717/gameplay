@@ -1,7 +1,7 @@
 
-## 一款由Godot开发的地牢射击类型的游戏
+## godot for csharp AI 小世界
 
-**Godot版本:** `4.2.1 mono`  
+**Godot版本:** `4.4.1 mono`  
 **.Net版本:** `8.0`
 
 ---
