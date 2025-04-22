@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://1ptjcb64rdbf"]
 
-[ext_resource type="Script" path="res://src/game/ui/editorDungeonGroup/EditorDungeonGroupPanel.cs" id="1_apg3p"]
+[ext_resource type="Script" uid="uid://c7gvf6c1a5cw" path="res://src/game/ui/editorDungeonGroup/EditorDungeonGroupPanel.cs" id="1_apg3p"]
 
 [node name="EditorDungeonGroup" type="Control"]
 layout_mode = 3

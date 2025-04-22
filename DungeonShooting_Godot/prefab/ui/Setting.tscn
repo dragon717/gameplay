@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bnwweusrc44xy"]
 
-[ext_resource type="Script" path="res://src/game/ui/setting/SettingPanel.cs" id="1_ff0oi"]
+[ext_resource type="Script" uid="uid://bbv2sc0ntacox" path="res://src/game/ui/setting/SettingPanel.cs" id="1_ff0oi"]
 [ext_resource type="Texture2D" uid="uid://cajcnlimvoxk" path="res://resource/sprite/ui/commonIcon/Back.png" id="2_vgl60"]
 
 [node name="Setting" type="Control"]
