@@ -13,22 +13,22 @@ public partial class World : CanvasModulate, ICoroutine
     /// 当前的游戏世界对象
     /// </summary>
     public static World Current => GameApplication.Instance.DungeonManager.CurrWorld;
-    
+
     /// <summary>
     /// 当前操作的玩家
     /// </summary>
     public Player Player { get; private set; }
-    
+
     /// <summary>
     /// //对象根节点
     /// </summary>
     public Node2D NormalLayer;
-    
+
     /// <summary>
     /// 对象根节点, 带y轴排序功能
     /// </summary>
     public Node2D YSortLayer;
-    
+
     /// <summary>
     /// 地图根节点
     /// </summary>
@@ -38,7 +38,7 @@ public partial class World : CanvasModulate, ICoroutine
     public Node2D AffiliationAreaRoot;
     public Node2D FogMaskRoot;
     public Node2D NavigationRoot;
-    
+
     /// <summary>
     /// 是否暂停
     /// </summary>
@@ -61,22 +61,22 @@ public partial class World : CanvasModulate, ICoroutine
             }
         }
     }
-    
+
     /// <summary>
     /// 所有被扔在地上的武器
     /// </summary>
     public HashSet<Weapon> Weapon_UnclaimedList { get; } = new HashSet<Weapon>();
-    
+
     /// <summary>
     /// 记录所有存活的角色
     /// </summary>
-    public List<Role> Role_InstanceList  { get; } = new List<Role>();
-    
+    public List<Role> Role_InstanceList { get; } = new List<Role>();
+
     /// <summary>
     /// 随机数对象
     /// </summary>
     public SeedRandom Random { get; private set; }
-    
+
     /// <summary>
     /// 随机对象池
     /// </summary>
@@ -85,8 +85,8 @@ public partial class World : CanvasModulate, ICoroutine
     /// <summary>
     /// 角色死亡事件
     /// </summary>
-    public event Action<Role> OnRoleDieEvent; 
-    
+    public event Action<Role> OnRoleDieEvent;
+
     private bool _pause = false;
     private List<CoroutineData> _coroutineList;
 
@@ -95,7 +95,7 @@ public partial class World : CanvasModulate, ICoroutine
         //TileRoot.YSortEnabled = false;
         NormalLayer = GetNode<Node2D>("TileRoot/NormalLayer");
         YSortLayer = GetNode<Node2D>("TileRoot/YSortLayer");
-        TileRoot = GetNode<TileMap>("TileRoot");
+        // TileRoot = GetNode<TileMap>("TileRoot"); //todo TileMapLayer 若仍用瓦片绘制
         StaticSpriteRoot = GetNode<Node2D>("TileRoot/StaticSpriteRoot");
         FogMaskRoot = GetNode<Node2D>("TileRoot/FogMaskRoot");
         NavigationRoot = GetNode<Node2D>("TileRoot/NavigationRoot");
@@ -134,7 +134,7 @@ public partial class World : CanvasModulate, ICoroutine
         GameCamera.Main.SetFollowTarget(player);
         GameApplication.Instance.Cursor.SetMountRole(player);
     }
-    
+
     /// <summary>
     /// 通知其他敌人发现目标了
     /// </summary>
@@ -144,7 +144,8 @@ public partial class World : CanvasModulate, ICoroutine
     {
         foreach (var role in Role_InstanceList)
         {
-            if (role != self && !role.IsDestroyed && role.AffiliationArea == self.AffiliationArea && role is AiRole enemy && !self.IsEnemy(enemy))
+            if (role != self && !role.IsDestroyed && role.AffiliationArea == self.AffiliationArea &&
+                role is AiRole enemy && !self.IsEnemy(enemy))
             {
                 //将未发现目标的敌人状态置为惊讶状态
                 var controller = enemy.StateController;
@@ -159,12 +160,12 @@ public partial class World : CanvasModulate, ICoroutine
             }
         }
     }
-    
+
     public long StartCoroutine(IEnumerator able)
     {
         return ProxyCoroutineHandler.ProxyStartCoroutine(ref _coroutineList, able);
     }
-	
+
     public void StopCoroutine(long coroutineId)
     {
         ProxyCoroutineHandler.ProxyStopCoroutine(ref _coroutineList, coroutineId);
@@ -186,7 +187,7 @@ public partial class World : CanvasModulate, ICoroutine
     public void InitRandomPool(SeedRandom random)
     {
         Random = random;
-        RandomPool = new  RandomPool(this);
+        RandomPool = new RandomPool(this);
     }
 
     /// <summary>
