@@ -143,6 +143,8 @@ public partial class GameApplication : Node2D, ICoroutine
 
 		ImageCanvas.Init(GetTree().CurrentScene);
 		
+		// 读取参数设置主页面
+		AutoSceneLoader.Init();
 		//初始化ui
 		UiManager.Init();
 		//调试Ui

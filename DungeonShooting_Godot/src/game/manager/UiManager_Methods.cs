@@ -5,7 +5,7 @@ public static partial class UiManager
 
     public static class UiNames
     {
-        public const string Main = "Main";
+        public static string Main = "Main2";
         public const string TileSetEditorCombination = "TileSetEditorCombination";
         public const string MapEditorMapTile = "MapEditorMapTile";
         public const string MapEditorMapLayer = "MapEditorMapLayer";
@@ -42,6 +42,12 @@ public static partial class UiManager
         public const string TileSetEditorTerrain = "TileSetEditorTerrain";
         public const string EditorColorPicker = "EditorColorPicker";
         public const string RoomUI = "RoomUI";
+    }
+    
+    // set Main
+    public static void SetMainTscn(string name)
+    {
+        UiNames.Main = name;
     }
 
     /// <summary>
