@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Godot;
 
 /// <summary>
@@ -334,6 +335,26 @@ public partial class DungeonManager : Node2D
         player.Position = hall.BirthMark.Position;
         player.PutDown(RoomLayerEnum.YSortLayer);
         CurrWorld.SetCurrentPlayer(player);
+
+
+        // todo 生成怪物
+        var preinstallInfo = new RoomPreinstallInfo();
+        var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
+        roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Battle;
+        var RoomGroup = GameApplication.Instance.RoomConfig["Test1"];
+        RoomGroup.InitWeight(new SeedRandom());
+        var roomSplit = RoomGroup.GetRandomRoom(DungeonRoomType.Battle);
+        roomPreinstall.RoomInfo.RoomSplit = roomSplit;
+        var tileInfo = new DungeonTileInfo();
+        tileInfo.InitData();
+        roomPreinstall.RoomInfo.RoomSplit.TileInfo = tileInfo;
+        roomPreinstall.RoomPreinstallInfo.InitWaveList();
+        CurrWorld.RandomPool.FillAutoWave(roomPreinstall);
+        roomInfo.RoomPreinstall = roomPreinstall;
+        //执行预处理操作
+        roomPreinstall.Pretreatment(CurrWorld);
+
+
         affiliation.InsertItem(player);
         player.WeaponPack.PickupItem(ActivityObject.Create<Weapon>(ActivityObject.Ids.Id_weapon0001));
         yield return 0;
