@@ -7,7 +7,6 @@ namespace UI.Main;
 /// </summary>
 public partial class MainPanel : Main
 {
-
 	public override void OnCreateUi()
 	{
 		S_Start.Instance.Pressed += OnStartGameClick;
@@ -15,15 +14,12 @@ public partial class MainPanel : Main
 		S_Tools.Instance.Pressed += OnToolsClick;
 		S_Setting.Instance.Pressed += OnSettingClick;
 	}
-	
+
 	//点击开始游戏
 	private void OnStartGameClick()
 	{
 		UiManager.Open_Loading();
-		GameApplication.Instance.DungeonManager.LoadHall(() =>
-		{
-			UiManager.Destroy_Loading();
-		});
+		GameApplication.Instance.DungeonManager.LoadHall(() => { UiManager.Destroy_Loading(); });
 		HideUi();
 	}
 

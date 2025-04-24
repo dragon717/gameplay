@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using UI.BottomTips;
 public partial class GameApplication : Node2D, ICoroutine
 {
 	public static GameApplication Instance { get; private set; }
-	
+
 	/// <summary>
 	/// 游戏渲染视口
 	/// </summary>
@@ -26,17 +25,17 @@ public partial class GameApplication : Node2D, ICoroutine
 	/// 场景根节点
 	/// </summary>
 	public Node2D SceneRoot;
-	
+
 	/// <summary>
 	/// 全局根节点
 	/// </summary>
 	public Node2D GlobalNodeRoot;
-	
+
 	/// <summary>
 	/// 游戏目标帧率
 	/// </summary>
 	public int TargetFps { get; private set; }
-	
+
 	/// <summary>
 	/// 鼠标指针
 	/// </summary>
@@ -46,17 +45,17 @@ public partial class GameApplication : Node2D, ICoroutine
 	/// 地牢管理器
 	/// </summary>
 	public DungeonManager DungeonManager { get; private set; }
-	
+
 	/// <summary>
 	/// 房间配置
 	/// </summary>
 	public Dictionary<string, DungeonRoomGroup> RoomConfig { get; private set; }
-	
+
 	/// <summary>
 	/// TileSet配置
 	/// </summary>
 	public Dictionary<string, TileSetSplit> TileSetConfig { get; private set; }
-	
+
 	// /// <summary>
 	// /// 房间配置数据, key: 模板房间资源路径
 	// /// </summary>
@@ -66,12 +65,12 @@ public partial class GameApplication : Node2D, ICoroutine
 	/// 游戏视图大小
 	/// </summary>
 	public Vector2 ViewportSize { get; private set; } = new Vector2(480, 270);
-	
+
 	/// <summary>
 	/// 像素缩放
 	/// </summary>
 	public int PixelScale { get; private set; } = 4;
-	
+
 	/// <summary>
 	/// 地牢配置信息
 	/// </summary>
@@ -79,13 +78,13 @@ public partial class GameApplication : Node2D, ICoroutine
 
 	//开启的协程
 	private List<CoroutineData> _coroutineList;
-	
+
 	public GameApplication()
 	{
 		Instance = this;
 		//TargetFps = 20;
 		TargetFps = Mathf.RoundToInt(DisplayServer.ScreenGetRefreshRate());
-		
+
 		Utils.InitRandom();
 
 		//初始化配置表
@@ -104,7 +103,7 @@ public partial class GameApplication : Node2D, ICoroutine
 		BuffProp.InitBuffAttribute();
 		//初始化主动道具数据
 		ActiveProp.InitActiveAttribute();
-		
+
 		DungeonConfig = new DungeonConfig();
 		DungeonConfig.GroupName = "Test1";
 		DungeonConfig.RandomSeed = null;
@@ -126,7 +125,7 @@ public partial class GameApplication : Node2D, ICoroutine
 		SubViewportContainer = GetNode<SubViewportContainer>("ViewCanvas/SubViewportContainer");
 		SceneRoot = GetNode<Node2D>("ViewCanvas/SubViewportContainer/SubViewport/SceneRoot");
 		GlobalNodeRoot = GetNode<Node2D>("GlobalNodeRoot");
-		
+
 		//背景颜色
 		RenderingServer.SetDefaultClearColor(new Color(0, 0, 0, 1));
 		//随机化种子
@@ -142,14 +141,14 @@ public partial class GameApplication : Node2D, ICoroutine
 		GetWindow().SizeChanged += OnWindowSizeChanged;
 
 		ImageCanvas.Init(GetTree().CurrentScene);
-		
+
 		// 读取参数设置主页面
 		AutoSceneLoader.Init();
 		//初始化ui
 		UiManager.Init();
 		//调试Ui
 		UiManager.Open_Debugger();
-		
+
 		// 初始化鼠标
 		InitCursor();
 		//地牢管理器
@@ -170,17 +169,18 @@ public partial class GameApplication : Node2D, ICoroutine
 		var newDelta = (float)delta;
 		InputManager.Update(newDelta);
 		SoundManager.Update(newDelta);
-		
+
 		//协程更新
 		ProxyCoroutineHandler.ProxyUpdateCoroutine(ref _coroutineList, newDelta);
 	}
-	
+
 	/// <summary>
 	/// 将 viewport 以外的全局坐标 转换成 viewport 内的全局坐标
 	/// </summary>
 	public Vector2 GlobalToViewPosition(Vector2 globalPos)
 	{
-		return globalPos / PixelScale - (ViewportSize / 2) + GameCamera.Main.GlobalPosition - GameCamera.Main.PixelOffset;
+		return globalPos / PixelScale - (ViewportSize / 2) + GameCamera.Main.GlobalPosition -
+			   GameCamera.Main.PixelOffset;
 	}
 
 	/// <summary>
@@ -188,21 +188,24 @@ public partial class GameApplication : Node2D, ICoroutine
 	/// </summary>
 	public Vector2 ViewToGlobalPosition(Vector2 viewPos)
 	{
-		return (viewPos + GameCamera.Main.PixelOffset - (GameCamera.Main.GlobalPosition + GameCamera.Main.Offset) + (ViewportSize / 2)) * PixelScale;
+		return (viewPos + GameCamera.Main.PixelOffset - (GameCamera.Main.GlobalPosition + GameCamera.Main.Offset) +
+				(ViewportSize / 2)) * PixelScale;
 	}
-	
+
 	public long StartCoroutine(IEnumerator able)
 	{
 		return ProxyCoroutineHandler.ProxyStartCoroutine(ref _coroutineList, able);
 	}
-	
+
 	public void StopCoroutine(long coroutineId)
 	{
 		ProxyCoroutineHandler.ProxyStopCoroutine(ref _coroutineList, coroutineId);
 	}
 
+	// 判断协程是否结束
 	public bool IsCoroutineOver(long coroutineId)
 	{
+		// 调用ProxyCoroutineHandler类的ProxyIsCoroutineOver方法，判断协程是否结束
 		return ProxyCoroutineHandler.ProxyIsCoroutineOver(ref _coroutineList, coroutineId);
 	}
 
@@ -211,7 +214,7 @@ public partial class GameApplication : Node2D, ICoroutine
 		ProxyCoroutineHandler.ProxyStopAllCoroutine(ref _coroutineList);
 	}
 
-	public void SetRoomConfig(Dictionary<string,DungeonRoomGroup> roomConfig)
+	public void SetRoomConfig(Dictionary<string, DungeonRoomGroup> roomConfig)
 	{
 		RoomConfig = roomConfig;
 		InitReadyRoom();
@@ -226,7 +229,7 @@ public partial class GameApplication : Node2D, ICoroutine
 
 		InitReadyRoom();
 	}
-	
+
 	//初始化房间数据
 	private void InitReadyRoom()
 	{
@@ -241,7 +244,7 @@ public partial class GameApplication : Node2D, ICoroutine
 			RemoveUnreadyRooms(dungeonRoomGroup.Value.EventList);
 		}
 	}
-	
+
 	//移除未准备好的房间
 	private void RemoveUnreadyRooms(List<DungeonRoomSplit> roomInfos)
 	{
@@ -261,7 +264,7 @@ public partial class GameApplication : Node2D, ICoroutine
 		//加载房间配置信息
 		var asText = ResourceManager.LoadText("res://" + GameConfig.RoomTileSetDir + GameConfig.TileSetConfigFile);
 		TileSetConfig = JsonSerializer.Deserialize<Dictionary<string, TileSetSplit>>(asText);
-		
+
 		//加载所有数据
 		foreach (var tileSetSplit in TileSetConfig)
 		{
@@ -276,7 +279,7 @@ public partial class GameApplication : Node2D, ICoroutine
 		ViewportSize = size / PixelScale;
 		RefreshSubViewportSize();
 	}
-	
+
 	//刷新视窗大小
 	private void RefreshSubViewportSize()
 	{

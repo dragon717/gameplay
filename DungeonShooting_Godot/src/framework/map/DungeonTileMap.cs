@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,8 @@ using Godot;
 /// </summary>
 public class DungeonTileMap
 {
-    
     //----------------------------------------------------
-    
+
     private TileMap _tileRoot;
 
     public DungeonTileMap(TileMap tileRoot)
@@ -26,7 +24,7 @@ public class DungeonTileMap
     {
         yield return _AutoFillRoomTile(config, startRoomInfo, world);
     }
-    
+
     /// <summary>
     /// 根据 startRoom 和 config 数据自动填充 tileMap 参数中的过道数据, 该函数为协程函数
     /// </summary>
@@ -34,18 +32,18 @@ public class DungeonTileMap
     {
         yield return _AutoFillAisleTile(config, roomInfo, world);
     }
-    
+
     private IEnumerator _AutoFillRoomTile(AutoTileConfig config, RoomInfo roomInfo, World world)
     {
         foreach (var info in roomInfo.Next)
         {
             yield return _AutoFillRoomTile(config, info, world);
         }
-        
+
         //铺房间
         var rectPos = roomInfo.RoomSplit.RoomInfo.Position.AsVector2I();
         var tileInfo = roomInfo.RoomSplit.TileInfo;
-        
+
         //---------------------- 生成房间小地图预览 ----------------------
         //先计算范围
         var x = int.MaxValue;
@@ -61,6 +59,7 @@ public class DungeonTileMap
             y = Mathf.Min(y, posY);
             y2 = Mathf.Max(y2, posY);
         }
+
         //创建image, 这里留两个像素宽高用于描边
         var image = Image.Create(x2 - x + 3, y2 - y + 3, false, Image.Format.Rgba8);
         //image.Fill(Colors.Green);
@@ -71,21 +70,23 @@ public class DungeonTileMap
             var posY = tileInfo.Floor[i + 1] - y + 1;
             image.SetPixel(posX, posY, new Color(0, 0, 0, 0.5882353F));
         }
+
         //创建texture
         var imageTexture = ImageTexture.CreateFromImage(image);
         roomInfo.PreviewTexture = imageTexture;
 
         //---------------------- 填充tile操作 ----------------------
         var terrainInfo = config.TerrainInfo;
-        
-        SetAutoLayerDataFromList(MapLayer.AutoFloorLayer, config.SourceId, roomInfo, tileInfo.Floor, rectPos, terrainInfo);
+
+        SetAutoLayerDataFromList(MapLayer.AutoFloorLayer, config.SourceId, roomInfo, tileInfo.Floor, rectPos,
+            terrainInfo);
         SetCustomLayerDataFromList(MapLayer.CustomFloorLayer1, roomInfo, tileInfo.CustomFloor1, rectPos);
         SetCustomLayerDataFromList(MapLayer.CustomFloorLayer2, roomInfo, tileInfo.CustomFloor2, rectPos);
         SetCustomLayerDataFromList(MapLayer.CustomFloorLayer3, roomInfo, tileInfo.CustomFloor3, rectPos);
         SetCustomLayerDataFromList(MapLayer.CustomMiddleLayer1, roomInfo, tileInfo.CustomMiddle1, rectPos);
         SetCustomLayerDataFromList(MapLayer.CustomMiddleLayer2, roomInfo, tileInfo.CustomMiddle2, rectPos);
         SetCustomLayerDataFromList(MapLayer.CustomTopLayer, roomInfo, tileInfo.CustomTop, rectPos);
-        
+
         //寻找可用传送点
         var maxCount = (roomInfo.Size.X - 2) * (roomInfo.Size.Y - 2);
         var startPosition = roomInfo.Position + roomInfo.Size / 2;
@@ -98,10 +99,11 @@ public class DungeonTileMap
                 break;
             }
         }
-        
+
         //---------------------- 随机选择预设 ----------------------
         RoomPreinstallInfo preinstallInfo;
-        if (EditorPlayManager.IsPlay && roomInfo.RoomType == GameApplication.Instance.DungeonManager.CurrConfig.DesignatedType) //编辑器模式, 指定预设
+        if (EditorPlayManager.IsPlay &&
+            roomInfo.RoomType == GameApplication.Instance.DungeonManager.CurrConfig.DesignatedType) //编辑器模式, 指定预设
         {
             preinstallInfo = EditorTileMapManager.SelectPreinstall;
         }
@@ -118,21 +120,21 @@ public class DungeonTileMap
                 preinstallInfo = roomInfo.RoomSplit.Preinstall[index];
             }
         }
-        
+
         var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
         roomInfo.RoomPreinstall = roomPreinstall;
         //执行预处理操作
         roomPreinstall.Pretreatment(world);
     }
 
-    
+
     private IEnumerator _AutoFillAisleTile(AutoTileConfig config, RoomInfo roomInfo, World world)
     {
         foreach (var info in roomInfo.Next)
         {
             yield return _AutoFillAisleTile(config, info, world);
         }
-        
+
         // yield break;
         //铺过道
         foreach (var doorInfo in roomInfo.Doors)
@@ -149,15 +151,18 @@ public class DungeonTileMap
                 yield return 0;
 
                 //创建image, 这里留两个像素宽高用于描边
-                var aisleImage = Image.Create(doorInfo.AisleFloorRect.Size.X, doorInfo.AisleFloorRect.Size.Y, false, Image.Format.Rgba8);
+                var aisleImage = Image.Create(doorInfo.AisleFloorRect.Size.X, doorInfo.AisleFloorRect.Size.Y, false,
+                    Image.Format.Rgba8);
                 //image.Fill(new Color(0, 1, 0, 0.2f));
                 //填充像素点
                 foreach (var p in doorInfo.AisleFloorCell)
                 {
                     _tileRoot.SetCell(MapLayer.AutoFloorLayer, p, config.Floor.SourceId, config.Floor.AutoTileCoords);
                     //_tileRoot.SetCell(MapLayer.CustomTopLayer, p, config.Auto_000_010_000.SourceId, config.Auto_000_010_000.AutoTileCoords);
-                    aisleImage.SetPixel(p.X - doorInfo.AisleFloorRect.Position.X, p.Y - doorInfo.AisleFloorRect.Position.Y, new Color(1, 1, 1, 0.5882353F));
+                    aisleImage.SetPixel(p.X - doorInfo.AisleFloorRect.Position.X,
+                        p.Y - doorInfo.AisleFloorRect.Position.Y, new Color(1, 1, 1, 0.5882353F));
                 }
+
                 //创建texture
                 var aisleImageTexture = ImageTexture.CreateFromImage(aisleImage);
                 doorInfo.AislePreviewTexture = aisleImageTexture;
@@ -174,9 +179,10 @@ public class DungeonTileMap
         world.NavigationRoot.AddChild(navigation);
         TileMapUtils.GenerateTerrain(_tileRoot, navigation, config);
     }
-    
+
     //设置自动地形层的数据
-    private void SetAutoLayerDataFromList(int layer, int sourceId, RoomInfo roomInfo, List<int> data, Vector2I rectPos, TileSetTerrainInfo terrainInfo)
+    private void SetAutoLayerDataFromList(int layer, int sourceId, RoomInfo roomInfo, List<int> data, Vector2I rectPos,
+        TileSetTerrainInfo terrainInfo)
     {
         for (var i = 0; i < data.Count; i += 4)
         {
@@ -191,9 +197,9 @@ public class DungeonTileMap
             _tileRoot.SetCell(layer, pos, sourceId, atlasCoords);
         }
     }
-    
+
     //设置自定义层的数据
-    private void SetCustomLayerDataFromList(int layer, RoomInfo roomInfo,  List<int> data, Vector2I rectPos)
+    private void SetCustomLayerDataFromList(int layer, RoomInfo roomInfo, List<int> data, Vector2I rectPos)
     {
         for (var i = 0; i < data.Count; i += 5)
         {
@@ -206,7 +212,7 @@ public class DungeonTileMap
             _tileRoot.SetCell(layer, pos, sourceId, new Vector2I(atlasCoordsX, atlasCoordsY));
         }
     }
-    
+
     //填充tile区域
     private void FillRect(int layer, TileCellData data, Vector2 pos, Vector2 size)
     {
@@ -232,7 +238,7 @@ public class DungeonTileMap
             }
         }
     }
-    
+
     /// <summary>
     /// 返回指定位置的Tile是否为可以行走
     /// </summary>

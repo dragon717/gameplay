@@ -22,6 +22,7 @@ settings/fps/force_fps=60
 [display]
 
 window/stretch/aspect="keep_width"
+window/stretch/scale_mode="integer"
 
 [dotnet]
 

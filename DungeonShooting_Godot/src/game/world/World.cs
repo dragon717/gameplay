@@ -95,7 +95,7 @@ public partial class World : CanvasModulate, ICoroutine
         //TileRoot.YSortEnabled = false;
         NormalLayer = GetNode<Node2D>("TileRoot/NormalLayer");
         YSortLayer = GetNode<Node2D>("TileRoot/YSortLayer");
-        // TileRoot = GetNode<TileMap>("TileRoot"); //todo TileMapLayer 若仍用瓦片绘制
+        TileRoot = GetNode<TileMap>("TileRoot"); //todo TileMapLayer 若仍用瓦片绘制
         StaticSpriteRoot = GetNode<Node2D>("TileRoot/StaticSpriteRoot");
         FogMaskRoot = GetNode<Node2D>("TileRoot/FogMaskRoot");
         NavigationRoot = GetNode<Node2D>("TileRoot/NavigationRoot");
@@ -161,8 +161,10 @@ public partial class World : CanvasModulate, ICoroutine
         }
     }
 
+    // 启动协程
     public long StartCoroutine(IEnumerator able)
     {
+        // 调用代理协程处理器的启动协程方法，传入协程列表和协程
         return ProxyCoroutineHandler.ProxyStartCoroutine(ref _coroutineList, able);
     }
 
@@ -171,8 +173,10 @@ public partial class World : CanvasModulate, ICoroutine
         ProxyCoroutineHandler.ProxyStopCoroutine(ref _coroutineList, coroutineId);
     }
 
+    // 判断协程是否结束
     public bool IsCoroutineOver(long coroutineId)
     {
+        // 调用ProxyCoroutineHandler类的ProxyIsCoroutineOver方法，判断协程是否结束
         return ProxyCoroutineHandler.ProxyIsCoroutineOver(ref _coroutineList, coroutineId);
     }
 

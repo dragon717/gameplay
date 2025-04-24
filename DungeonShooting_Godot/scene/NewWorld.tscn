@@ -34,8 +34,9 @@ texture = ExtResource("1_tvqh4")
 centered = false
 metadata/_edit_group_ = true
 
-[node name="TileRoot" type="Node2D" parent="." groups=["navigation"]]
+[node name="TileRoot" type="TileMap" parent="." groups=["navigation"]]
 y_sort_enabled = true
+format = 2
 metadata/_edit_group_ = true
 
 [node name="NavigationRoot" type="Node2D" parent="TileRoot"]
