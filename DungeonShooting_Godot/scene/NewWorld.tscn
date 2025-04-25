@@ -57,8 +57,9 @@ y_sort_enabled = true
 [node name="FogMaskRoot" type="Node2D" parent="TileRoot"]
 
 [node name="groundTextureRect" type="TextureRect" parent="TileRoot"]
-offset_right = 40.0
-offset_bottom = 40.0
+z_index = -100
+offset_right = 3840.0
+offset_bottom = 2160.0
 texture = ExtResource("3_7l6pn")
 
 [node name="BirthMark" type="Marker2D" parent="."]

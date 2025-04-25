@@ -266,6 +266,78 @@ public class SeedRandom
         return list.ToArray();
     }
 
+    /// <summary>
+    /// 返回指定多边形区域内的随机坐标点
+    /// 注意：每个多边形应由三角形组成（三个顶点索引）
+    /// </summary>
+    public Vector2[] GetRandomPositionInPolygon2(List<Vector2> vertices, List<int[]> polygons, int count)
+    {
+        List<int[]> validPolygons = new List<int[]>();
+        List<float> areas = new List<float>();
+        float totalArea = 0f;
+
+        // 过滤有效三角形并计算面积
+        foreach (int[] poly in polygons)
+        {
+            if (poly.Length < 3)
+                continue;
+
+            Vector2 a = vertices[poly[0]];
+            Vector2 b = vertices[poly[1]];
+            Vector2 c = vertices[poly[2]];
+
+            float area = Mathf.Abs((b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X)) * 0.5f;
+            validPolygons.Add(poly);
+            areas.Add(area);
+            totalArea += area;
+        }
+
+        if (totalArea <= Mathf.Epsilon || count == 0 || validPolygons.Count == 0)
+            return new Vector2[0];
+
+        // 构建累积面积数组
+        List<float> cumulativeAreas = new List<float>(areas.Count);
+        float currentSum = 0;
+        foreach (float area in areas)
+        {
+            currentSum += area;
+            cumulativeAreas.Add(currentSum);
+        }
+
+        // 生成随机点
+        Vector2[] points = new Vector2[count];
+        for (int i = 0; i < count; i++)
+        {
+            // 选择随机三角形（使用当前实例的随机生成器）
+            float randomValue = (float)_random.NextDouble() * totalArea;
+            int triangleIndex = cumulativeAreas.BinarySearch(randomValue);
+            if (triangleIndex < 0) triangleIndex = ~triangleIndex;
+            if (triangleIndex >= validPolygons.Count) triangleIndex = validPolygons.Count - 1;
+
+            // 获取三角形顶点
+            int[] poly = validPolygons[triangleIndex];
+            Vector2 a = vertices[poly[0]];
+            Vector2 b = vertices[poly[1]];
+            Vector2 c = vertices[poly[2]];
+
+            // 生成均匀分布的随机点（使用当前实例的随机生成器）
+            float u = (float)_random.NextDouble();
+            float v = (float)_random.NextDouble();
+
+            if (u + v > 1)
+            {
+                u = 1 - u;
+                v = 1 - v;
+            }
+
+            points[i] = new Vector2(
+                a.X * (1 - u - v) + b.X * u + c.X * v,
+                a.Y * (1 - u - v) + b.Y * u + c.Y * v
+            );
+        }
+
+        return points;
+    }
 
     /// <summary>
     /// 生成一个表示圆形视野范围的多边形。

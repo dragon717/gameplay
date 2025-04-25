@@ -121,7 +121,7 @@ public class RandomPool
         var navigationPolygon = visibilityPolygon.polygons;
 
         // 生成随机点
-        var positionArray = World.Random.GetRandomPositionInPolygon(vertices, navigationPolygon, count);
+        var positionArray = World.Random.GetRandomPositionInPolygon2(vertices, navigationPolygon, count);
 
         var arr = new ActivityType[] { ActivityType.Enemy, ActivityType.Weapon, ActivityType.Prop };
         var weight = new int[] { 15, 2, 1 };
