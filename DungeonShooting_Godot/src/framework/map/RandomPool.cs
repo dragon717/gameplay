@@ -1,5 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Xml.Schema;
 using Config;
 using Godot;
 
@@ -9,12 +9,12 @@ public class RandomPool
     /// 随机数生成器
     /// </summary>
     public SeedRandom Random { get; }
-    
+
     /// <summary>
     /// 所属世界
     /// </summary>
     public World World { get; }
-    
+
     public RandomPool(World world)
     {
         World = world;
@@ -67,6 +67,7 @@ public class RandomPool
         {
             vertices.Add(sv2.AsVector2());
         }
+
         var positionArray = World.Random.GetRandomPositionInPolygon(vertices, tileInfo.NavigationPolygon, count);
         var arr = new ActivityType[] { ActivityType.Enemy, ActivityType.Weapon, ActivityType.Prop };
         var weight = new int[] { 15, 2, 1 };
@@ -75,16 +76,18 @@ public class RandomPool
             var tempWave = preinstall.GetOrCreateWave(World.Random.RandomRangeInt(0, 2));
             var index = World.Random.RandomWeight(weight);
             var activityType = arr[index];
-    
+
             //创建标记
-            var mark = ActivityMark.CreateMark(activityType, i * 0.3f, preinstall.RoomInfo.ToGlobalPosition(positionArray[i]));
-            
+            var mark = ActivityMark.CreateMark(activityType, i * 0.3f,
+                preinstall.RoomInfo.ToGlobalPosition(positionArray[i]));
+
             if (activityType == ActivityType.Enemy) //敌人
             {
                 mark.Id = GetRandomEnemy().Id;
                 mark.Attr.Add("Face", "0");
                 mark.DerivedAttr = new Dictionary<string, string>();
-                mark.DerivedAttr.Add("Face", World.Random.RandomChoose((int)FaceDirection.Left, (int)FaceDirection.Right).ToString()); //链朝向
+                mark.DerivedAttr.Add("Face",
+                    World.Random.RandomChoose((int)FaceDirection.Left, (int)FaceDirection.Right).ToString()); //链朝向
                 if (World.Random.RandomBoolean(0.8f)) //手持武器
                 {
                     var weapon = GetRandomWeapon();
@@ -102,6 +105,64 @@ public class RandomPool
             {
                 mark.Id = GetRandomProp().Id;
             }
+
+            tempWave.Add(mark);
+        }
+    }
+
+    //填充战斗房间
+    public void FillRoomForAIWorld(RoomPreinstall preinstall, Vector2 point)
+    {
+        var count = World.Random.RandomRangeInt(3, 10);
+
+        // 生成视野多边形
+        var visibilityPolygon = World.Random.GenerateCircularVisibilityPolygon(point, 100);
+        var vertices = visibilityPolygon.vertices;
+        var navigationPolygon = visibilityPolygon.polygons;
+
+        // 生成随机点
+        var positionArray = World.Random.GetRandomPositionInPolygon(vertices, navigationPolygon, count);
+
+        var arr = new ActivityType[] { ActivityType.Enemy, ActivityType.Weapon, ActivityType.Prop };
+        var weight = new int[] { 15, 2, 1 };
+        for (var i = 0; i < count; i++)
+        {
+            var tempWave = preinstall.GetOrCreateWave(World.Random.RandomRangeInt(0, 2));
+            var index = World.Random.RandomWeight(weight);
+            var activityType = arr[index];
+
+            var pos = positionArray[i];
+
+            //创建标记
+            var mark = ActivityMark.CreateMark(activityType, i * 0.3f, pos);
+            //Debug 打印敌人
+            GD.Print($"敌人位置:{pos}， 全局坐标:{mark.Position}");
+
+            if (activityType == ActivityType.Enemy) //敌人
+            {
+                mark.Id = GetRandomEnemy().Id;
+                mark.Attr.Add("Face", "0");
+                mark.DerivedAttr = new Dictionary<string, string>();
+                mark.DerivedAttr.Add("Face",
+                    World.Random.RandomChoose((int)FaceDirection.Left, (int)FaceDirection.Right).ToString()); //链朝向
+                if (World.Random.RandomBoolean(0.8f)) //手持武器
+                {
+                    var weapon = GetRandomWeapon();
+                    var weaponAttribute = Weapon.GetWeaponAttribute(weapon.Id);
+                    mark.Attr.Add("Weapon", weapon.Id); //武器id
+                    mark.Attr.Add("CurrAmmon", weaponAttribute.AmmoCapacity.ToString()); //弹夹弹药量
+                    mark.Attr.Add("ResidueAmmo", weaponAttribute.AmmoCapacity.ToString()); //剩余弹药量
+                }
+            }
+            else if (activityType == ActivityType.Weapon) //武器
+            {
+                mark.Id = GetRandomWeapon().Id;
+            }
+            else if (activityType == ActivityType.Prop) //道具
+            {
+                mark.Id = GetRandomProp().Id;
+            }
+
             tempWave.Add(mark);
         }
     }

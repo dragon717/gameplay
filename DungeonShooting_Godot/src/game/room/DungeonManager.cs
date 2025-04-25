@@ -331,35 +331,35 @@ public partial class DungeonManager : Node2D
             player.Name = "Player";
         }
 
+        //设置玩家归属区域
         player.World = CurrWorld;
         player.Position = hall.BirthMark.Position;
         player.PutDown(RoomLayerEnum.YSortLayer);
         CurrWorld.SetCurrentPlayer(player);
+        affiliation.InsertItem(player);
 
 
         // todo 生成怪物
         var preinstallInfo = new RoomPreinstallInfo();
         var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
         roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Battle;
-        var RoomGroup = GameApplication.Instance.RoomConfig["Test1"];
-        RoomGroup.InitWeight(new SeedRandom());
-        var roomSplit = RoomGroup.GetRandomRoom(DungeonRoomType.Battle);
+        var roomGroup = GameApplication.Instance.RoomConfig["Test1"];
+        roomGroup.InitWeight(new SeedRandom());
+        var roomSplit = roomGroup.GetRandomRoom(DungeonRoomType.Battle);
         roomPreinstall.RoomInfo.RoomSplit = roomSplit;
         var tileInfo = new DungeonTileInfo();
         tileInfo.InitData();
         roomPreinstall.RoomInfo.RoomSplit.TileInfo = tileInfo;
         roomPreinstall.RoomPreinstallInfo.InitWaveList();
-        CurrWorld.RandomPool.FillAutoWave(roomPreinstall);
+        CurrWorld.RandomPool.FillRoomForAIWorld(roomPreinstall, player.Position);
         roomInfo.RoomPreinstall = roomPreinstall;
         //执行预处理操作
         roomPreinstall.Pretreatment(CurrWorld);
 
-
-        affiliation.InsertItem(player);
+        // 测试武器
         player.WeaponPack.PickupItem(ActivityObject.Create<Weapon>(ActivityObject.Ids.Id_weapon0001));
         yield return 0;
         player.Collision.Disabled = false;
-
         GameApplication.Instance.Cursor.SetGuiMode(false);
         yield return 0;
 

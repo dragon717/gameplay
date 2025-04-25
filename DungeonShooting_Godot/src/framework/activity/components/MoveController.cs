@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using Godot;
 
@@ -58,7 +57,7 @@ public class MoveController : Component
 
         BasisVelocity *= scale;
     }
-    
+
     /// <summary>
     /// 缩放所有外力对象的旋转速率
     /// </summary>
@@ -92,7 +91,7 @@ public class MoveController : Component
             }
         }
     }
-    
+
     /// <summary>
     /// 添加外力旋转速率, 并且平均分配给所有外力旋转速率
     /// </summary>
@@ -111,7 +110,7 @@ public class MoveController : Component
             }
         }
     }
-    
+
     /// <summary>
     /// 设置所有外力对象的速率
     /// </summary>
@@ -124,7 +123,7 @@ public class MoveController : Component
 
         BasisVelocity = value;
     }
-    
+
     /// <summary>
     /// 设置所有外力对象的旋转速率
     /// </summary>
@@ -135,7 +134,7 @@ public class MoveController : Component
             externalForce.RotationSpeed = speed;
         }
     }
-    
+
     /// <summary>
     /// 获取所有外力对象
     /// </summary>
@@ -165,7 +164,7 @@ public class MoveController : Component
         force.VelocityResistance = resistance;
         return force;
     }
-    
+
     /// <summary>
     /// 快速创建一个旋转外力, 该外力为匿名外力, 当速率变为 0 时自动销毁
     /// </summary>
@@ -298,7 +297,7 @@ public class MoveController : Component
         var finallyEf = new Vector2();
         //旋转速率总和
         var rotationSpeed = 0f;
-        
+
         //先调用更新
         if (_forceList.Count > 0)
         {
@@ -330,8 +329,11 @@ public class MoveController : Component
         {
             Rotation += rotationSpeed * delta;
         }
+
         var friction = !Master.IsThrowing && Master.Altitude <= 0 ? Master.GetCurrentFriction() : 0;
-        var rotationFriction = !Master.IsThrowing && Master.Altitude <= 0 ? Mathf.DegToRad(Master.GetCurrentRotationFriction()) : 0;
+        var rotationFriction = !Master.IsThrowing && Master.Altitude <= 0
+            ? Mathf.DegToRad(Master.GetCurrentRotationFriction())
+            : 0;
         //衰减旋转速率
         for (var i = 0; i < _forceList.Count; i++)
         {
@@ -351,11 +353,26 @@ public class MoveController : Component
         {
             //计算移动
             Master.Velocity = finallyVelocity;
+
+            //Debug 打印坐标
+            /*var globalPosition = Master.GlobalPosition;
+            var tileMap = Master.GetParent() as TileMap;
+            if (tileMap != null)
+            {
+                var mapCoordinates = tileMap.LocalToMap(globalPosition);
+                var localPosition = tileMap.MapToLocal(mapCoordinates);
+                GD.Print($"{Master.Name}: 全局坐标: {globalPosition}, 地图坐标: {mapCoordinates}, 局部坐标: {localPosition}");
+            }
+            else
+            {
+                GD.Print($"{Master.Name}:全局坐标: {globalPosition}, 不在 TileMap 中");
+            }*/
+
             Master.MoveAndSlide();
             //新速度
             var newVelocity = Master.Velocity;
-            
-            
+
+
             // if (newVelocity.X == 0f && _basisVelocity.X * finallyVelocity.X > 0)
             // {
             //     _basisVelocity.X = 0;
@@ -365,7 +382,7 @@ public class MoveController : Component
             // {
             //     _basisVelocity.Y = 0;
             // }
-            
+
             //是否撞到物体
             KinematicCollision2D collision;
             _flag--;
@@ -377,12 +394,13 @@ public class MoveController : Component
                 {
                     return;
                 }
+
                 //2帧内不能再触发第二次碰撞检测
                 _flag = 2;
                 var no = collision.GetNormal().Rotated(Mathf.Pi * 0.5f);
                 newVelocity = finallyEf.Reflect(no);
                 var rotation = newVelocity.Angle();
-                
+
                 //调用反弹函数
                 Master.OnBounce(rotation);
 
@@ -395,9 +413,10 @@ public class MoveController : Component
                     else if (Master.ActivityMaterial.RotationType == 2) //跟着反弹角度, 带垂直角度
                     {
                         Rotation = rotation;
-                        AnimatedSprite.Rotation = new Vector2(newVelocity.X, newVelocity.Y - Master.VerticalSpeed).Angle() - rotation;
+                        AnimatedSprite.Rotation =
+                            new Vector2(newVelocity.X, newVelocity.Y - Master.VerticalSpeed).Angle() - rotation;
                     }
-                
+
                     var length = _forceList.Count;
                     if (length != 0)
                     {
@@ -418,9 +437,10 @@ public class MoveController : Component
                 else if (Master.ActivityMaterial.RotationType == 2) //跟着反弹角度, 带垂直角度
                 {
                     var rotation = Rotation = newVelocity.Angle();
-                    AnimatedSprite.Rotation = new Vector2(newVelocity.X, newVelocity.Y - Master.VerticalSpeed).Angle() - rotation;
+                    AnimatedSprite.Rotation = new Vector2(newVelocity.X, newVelocity.Y - Master.VerticalSpeed).Angle() -
+                                              rotation;
                 }
-                
+
                 //调整外力速率
                 for (var i = 0; i < _forceList.Count; i++)
                 {
@@ -445,12 +465,13 @@ public class MoveController : Component
             }
         }
         else
+
         {
             Master.Velocity = Vector2.Zero;
         }
     }
 
-    //检测是否达到自动销毁的条件
+//检测是否达到自动销毁的条件
     private bool CheckAutoDestroy(ExternalForce force)
     {
         return force.AutoDestroy && force.Velocity == Vector2.Zero && force.RotationSpeed == 0;
@@ -459,12 +480,12 @@ public class MoveController : Component
     public override void DebugDraw()
     {
         //绘制力大小和方向
-        
+
         if (Master is Bullet) //不绘制子弹的力
         {
             return;
         }
-        
+
         var globalRotation = GlobalRotation;
         var flag = Master.Scale.Y < 0;
         if (flag)

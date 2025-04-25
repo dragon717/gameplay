@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using Godot;
@@ -12,10 +11,10 @@ public class SeedRandom
     /// 种子值
     /// </summary>
     public int Seed { get; }
-    
+
     private Random _random;
     private static int _staticSeed = 0;
-    
+
     public SeedRandom(int seed)
     {
         Seed = seed;
@@ -25,13 +24,14 @@ public class SeedRandom
     public SeedRandom()
     {
         var dateTime = DateTime.Now;
-        var num = dateTime.Year * 100000 + dateTime.Month * 100000 + dateTime.Day * 100000 + dateTime.Hour * 10000 + dateTime.Minute * 100 + dateTime.Second;
+        var num = dateTime.Year * 100000 + dateTime.Month * 100000 + dateTime.Day * 100000 + dateTime.Hour * 10000 +
+                  dateTime.Minute * 100 + dateTime.Second;
         num += _staticSeed;
         _staticSeed += 11111;
         Seed = num;
         _random = new Random(num);
     }
-    
+
     /// <summary>
     /// 返回一个随机的double值
     /// </summary>
@@ -39,14 +39,15 @@ public class SeedRandom
     {
         return _random.NextDouble();
     }
-    
+
     /// <summary>
     /// 返回随机 boolean 值
     /// </summary>
     public bool RandomBoolean()
     {
         return _random.NextSingle() >= 0.5f;
-    }    
+    }
+
     /// <summary>
     /// 指定概率会返回 true, probability 范围 0 - 1
     /// </summary>
@@ -146,7 +147,7 @@ public class SeedRandom
         {
             totalWeight += weight;
         }
-        
+
         var randomNumber = _random.Next(totalWeight);
         var currentWeight = 0;
         for (var i = 0; i < weightList.Count; i++)
@@ -161,7 +162,7 @@ public class SeedRandom
 
         return RandomRangeInt(0, weightList.Count - 1);
     }
-    
+
     /// <summary>
     /// 从权重列表中随机抽取下标值
     /// </summary>
@@ -173,7 +174,7 @@ public class SeedRandom
         {
             totalWeight += weight;
         }
-        
+
         var randomNumber = _random.Next(totalWeight);
         var currentWeight = 0;
         for (var i = 0; i < weightList.Length; i++)
@@ -188,7 +189,7 @@ public class SeedRandom
 
         return RandomRangeInt(0, weightList.Length - 1);
     }
-    
+
     /// <summary>
     /// 返回指定区域内的随机坐标点, 该函数比较慢, 请谨慎调用
     /// </summary>
@@ -198,6 +199,7 @@ public class SeedRandom
         {
             return Vector2.Zero.MakeArray(count);
         }
+
         var minX = int.MaxValue;
         var maxX = int.MinValue;
         var minY = int.MaxValue;
@@ -214,6 +216,7 @@ public class SeedRandom
             {
                 maxX = Mathf.FloorToInt(vertex.X);
             }
+
             if (vertex.Y < minY)
             {
                 minY = Mathf.CeilToInt(vertex.Y);
@@ -234,6 +237,7 @@ public class SeedRandom
                 {
                     list.Add(Vector2.Zero);
                 }
+
                 break;
             }
 
@@ -260,5 +264,45 @@ public class SeedRandom
         }
 
         return list.ToArray();
+    }
+
+
+    /// <summary>
+    /// 生成一个表示圆形视野范围的多边形。
+    /// </summary>
+    /// <param name="center">视野的中心点。</param>
+    /// <param name="viewDistance">视野的距离半径。</param>
+    /// <param name="segments">构成圆形的线段数量，值越大，圆形越平滑。</param>
+    /// <returns>包含多边形顶点和三角形索引的元组。</returns>
+    public (List<Vector2> vertices, List<int[]> polygons) GenerateCircularVisibilityPolygon(Vector2 center,
+        uint viewDistance, int segments = 64)
+    {
+        if (segments < 3)
+        {
+            throw new ArgumentException("线段数量必须大于等于 3。", nameof(segments));
+        }
+
+        List<Vector2> vertices = new List<Vector2>();
+        List<int[]> polygons = new List<int[]>();
+
+        // 添加中心点作为第一个顶点
+        vertices.Add(center);
+
+        // 计算圆形上的顶点
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = 2f * Mathf.Pi * i / segments;
+            float x = center.X + viewDistance * Mathf.Cos(angle);
+            float y = center.Y + viewDistance * Mathf.Sin(angle);
+            vertices.Add(new Vector2(x, y));
+        }
+
+        // 生成三角形索引
+        for (int i = 1; i <= segments; i++)
+        {
+            polygons.Add(new int[] { 0, i, i + 1 });
+        }
+
+        return (vertices, polygons);
     }
 }
