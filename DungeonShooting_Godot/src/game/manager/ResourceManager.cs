@@ -12,7 +12,7 @@ public static class ResourceManager
     /// 默认权重值
     /// </summary>
     public const int DefaultWeight = 100;
-    
+
     /// <summary>
     /// 颜色混合材质
     /// </summary>
@@ -30,8 +30,9 @@ public static class ResourceManager
     }
 
     private static ShaderMaterial _shadowMaterial;
-    
-    public static ShaderMaterial NewBlendMaterial => Load<ShaderMaterial>(ResourcePath.resource_material_Blend_tres, false);
+
+    public static ShaderMaterial NewBlendMaterial =>
+        Load<ShaderMaterial>(ResourcePath.resource_material_Blend_tres, false);
 
     /// <summary>
     /// 颜色混合Shader
@@ -66,8 +67,9 @@ public static class ResourceManager
             return _defaultFont16Px;
         }
     }
+
     private static Font _defaultFont16Px;
-    
+
     /// <summary>
     /// 默认字体资源, 字体大小12px
     /// </summary>
@@ -83,8 +85,9 @@ public static class ResourceManager
             return _defaultFont12Px;
         }
     }
+
     private static Font _defaultFont12Px;
-    
+
     //缓存的资源
     private static readonly Dictionary<string, object> CachePack = new Dictionary<string, object>();
 
@@ -136,7 +139,7 @@ public static class ResourceManager
         var packedScene = Load<PackedScene>(path, useCache);
         return packedScene.Instantiate();
     }
-    
+
     /// <summary>
     /// 加载并且实例化场景, 并返回
     /// </summary>
@@ -156,8 +159,10 @@ public static class ResourceManager
         string text;
         using (var fileAccess = FileAccess.Open(path, FileAccess.ModeFlags.Read))
         {
+            GD.Print("读取文件: " + path);
             text = fileAccess.GetAsText();
         }
+
         return text;
     }
 
@@ -214,10 +219,11 @@ public static class ResourceManager
                 }
             }
         }
+
         //未知物体
         return LoadTexture2D(ResourcePath.resource_sprite_ui_commonIcon_UnknownActivity_png);
     }
-    
+
     /// <summary>
     /// 将普通路径转化为 Godot 资源路径
     /// </summary>

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using Config;
@@ -17,9 +16,10 @@ public partial class Enemy : AiRole
     private ExcelConfig.EnemyBase _enemyAttribute;
 
     private static bool _init = false;
+
     private static Dictionary<string, ExcelConfig.EnemyBase> _enemyAttributeMap =
         new Dictionary<string, ExcelConfig.EnemyBase>();
-    
+
     /// <summary>
     /// 初始化敌人属性数据
     /// </summary>
@@ -52,6 +52,7 @@ public partial class Enemy : AiRole
         {
             return null;
         }
+
         if (_enemyAttributeMap.TryGetValue(itemId, out var attr))
         {
             return attr;
@@ -59,7 +60,7 @@ public partial class Enemy : AiRole
 
         throw new Exception($"敌人'{itemId}'没有在 EnemyBase 表中配置属性数据!");
     }
-    
+
     public override void OnInit()
     {
         base.OnInit();
@@ -88,20 +89,21 @@ public partial class Enemy : AiRole
         TailAfterViewRange = enemyBase.TailAfterViewRange;
         AttackInterval = enemyBase.AttackInterval;
         ViewAngleRange = enemyBase.ViewAngleRange;
-        
+
         roleState.Gold = Mathf.Max(0, Utils.Random.RandomConfigRange(enemyBase.Gold));
         return roleState;
     }
-    
+
     protected override void OnDie()
     {
         var effPos = Position + new Vector2(0, -Altitude);
         //血液特效
-        var blood = ObjectManager.GetPoolItem<AutoDestroyParticles>(ResourcePath.prefab_effect_enemy_EnemyBlood0001_tscn);
+        var blood = ObjectManager.GetPoolItem<AutoDestroyParticles>(
+            ResourcePath.prefab_effect_enemy_EnemyBlood0001_tscn);
         blood.Position = effPos - new Vector2(0, 12);
         blood.AddToActivityRoot(RoomLayerEnum.NormalLayer);
         blood.PlayEffect();
-        
+
         var realVelocity = GetRealVelocity();
         var velocity = (realVelocity * 1.5f).LimitLength(80);
         //创建敌人碎片
@@ -112,11 +114,11 @@ public partial class Enemy : AiRole
             debris.PutDown(effPos, RoomLayerEnum.NormalLayer);
             debris.MoveController.AddForce(velocity);
         }
-        
+
         //派发敌人死亡信号
         EventManager.EmitEvent(EventEnum.OnEnemyDie, this);
-
-        var obj = ResourceManager.LoadAndInstantiate<EnemyBlood0002>(ResourcePath.prefab_effect_enemy_EnemyBlood0002_tscn);
+        var obj = ResourceManager.LoadAndInstantiate<EnemyBlood0002>(ResourcePath
+            .prefab_effect_enemy_EnemyBlood0002_tscn);
         obj.AddToActivityRoot(RoomLayerEnum.NormalLayer);
         obj.InitRoom(AffiliationArea.RoomInfo);
         obj.Position = Position;
@@ -133,7 +135,7 @@ public partial class Enemy : AiRole
         {
             return;
         }
-        
+
         //看向目标
         if (LookTarget != null && MountLookTarget)
         {
@@ -167,6 +169,7 @@ public partial class Enemy : AiRole
         {
             return false;
         }
+
         return base.IsAllWeaponTotalAmmoEmpty();
     }
 

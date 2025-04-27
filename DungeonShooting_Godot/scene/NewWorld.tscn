@@ -64,7 +64,7 @@ texture = ExtResource("3_7l6pn")
 
 [node name="BirthMark" type="Marker2D" parent="."]
 z_as_relative = false
-position = Vector2(502, 214)
+position = Vector2(201, 206)
 
 [node name="DungeonEntrance" type="Area2D" parent="."]
 visible = false

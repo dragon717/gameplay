@@ -9,6 +9,7 @@ using Godot;
 public partial class DungeonManager : Node2D
 {
     public static string LoadMapPath = ResourcePath.scene_Hall_tscn;
+    public static bool IsDebug = false;
 
     /// <summary>
     /// 起始房间
@@ -340,21 +341,43 @@ public partial class DungeonManager : Node2D
 
 
         // todo 生成怪物
-        var preinstallInfo = new RoomPreinstallInfo();
-        var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
-        roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Battle;
-        var roomGroup = GameApplication.Instance.RoomConfig["Test1"];
-        roomGroup.InitWeight(new SeedRandom());
-        var roomSplit = roomGroup.GetRandomRoom(DungeonRoomType.Battle);
-        roomPreinstall.RoomInfo.RoomSplit = roomSplit;
-        var tileInfo = new DungeonTileInfo();
-        tileInfo.InitData();
-        roomPreinstall.RoomInfo.RoomSplit.TileInfo = tileInfo;
-        roomPreinstall.RoomPreinstallInfo.InitWaveList();
-        CurrWorld.RandomPool.FillRoomForAIWorld(roomPreinstall, player.Position);
-        roomInfo.RoomPreinstall = roomPreinstall;
-        //执行预处理操作
-        roomPreinstall.Pretreatment(CurrWorld);
+        /*if (IsDebug) {
+            var preinstallInfo = new RoomPreinstallInfo();
+            var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
+            roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Battle;
+            var roomGroup = GameApplication.Instance.RoomConfig["Test1"];
+            roomGroup.InitWeight(new SeedRandom());
+            var roomSplit = roomGroup.GetRandomRoom(DungeonRoomType.Battle);
+            roomPreinstall.RoomInfo.RoomSplit = roomSplit;
+            var tileInfo = new DungeonTileInfo();
+            tileInfo.InitData();
+            roomPreinstall.RoomInfo.RoomSplit.TileInfo = tileInfo;
+            roomPreinstall.RoomPreinstallInfo.InitWaveList();
+            CurrWorld.RandomPool.FillRoomForAIWorld(roomPreinstall, player.Position);
+            roomInfo.RoomPreinstall = roomPreinstall;
+            //执行预处理操作
+            roomPreinstall.Pretreatment(CurrWorld);
+        }*/
+
+        // todo 生成NPC
+        if (IsDebug)
+        {
+            var preinstallInfo = new RoomPreinstallInfo();
+            var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
+            roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Event;
+            var roomGroup = GameApplication.Instance.RoomConfig[CurrConfig.GroupName];
+            roomGroup.InitWeight(new SeedRandom());
+            var roomSplit = roomGroup.GetRandomRoom(DungeonRoomType.Event);
+            roomPreinstall.RoomInfo.RoomSplit = roomSplit;
+            var tileInfo = new DungeonTileInfo();
+            tileInfo.InitData();
+            roomPreinstall.RoomInfo.RoomSplit.TileInfo = tileInfo;
+            roomPreinstall.RoomPreinstallInfo.InitWaveList();
+            CurrWorld.RandomPool.FillRoomForAIWorld(roomPreinstall, player.Position);
+            roomInfo.RoomPreinstall = roomPreinstall;
+            //执行预处理操作
+            roomPreinstall.Pretreatment(CurrWorld);
+        }
 
         // 测试武器
         player.WeaponPack.PickupItem(ActivityObject.Create<Weapon>(ActivityObject.Ids.Id_weapon0001));

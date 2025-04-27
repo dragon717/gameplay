@@ -21,3 +21,6 @@
 /DungeonShooting_Godot/.VSCodeCounter
 **/*.txt
 /DungeonShooting_Godot/buffTable
+bin/win64/
+bin/win64.7z
+DungeonShooting_Godot/tools/Godot_v4.4.1-stable_mono_export_templates.tpz

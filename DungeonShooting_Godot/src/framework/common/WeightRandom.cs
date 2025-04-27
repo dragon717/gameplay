@@ -22,7 +22,7 @@ public class WeightRandom
     {
         _random = random;
     }
-    
+
     /// <summary>
     /// 初始化权重列表
     /// </summary>
