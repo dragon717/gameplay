@@ -159,7 +159,7 @@ public static class ResourceManager
         string text;
         using (var fileAccess = FileAccess.Open(path, FileAccess.ModeFlags.Read))
         {
-            GD.Print("读取文件: " + path);
+            // GD.Print("读取文件: " + path);
             text = fileAccess.GetAsText();
         }
 

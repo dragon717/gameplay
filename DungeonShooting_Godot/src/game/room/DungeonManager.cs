@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Mime;
 using Godot;
 
 /// <summary>
@@ -341,7 +342,8 @@ public partial class DungeonManager : Node2D
 
 
         // todo 生成怪物
-        /*if (IsDebug) {
+        /*if (IsDebug)
+         {
             var preinstallInfo = new RoomPreinstallInfo();
             var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
             roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Battle;
@@ -365,7 +367,7 @@ public partial class DungeonManager : Node2D
             var preinstallInfo = new RoomPreinstallInfo();
             var roomPreinstall = new RoomPreinstall(roomInfo, preinstallInfo);
             roomPreinstall.RoomInfo.RoomType = DungeonRoomType.Event;
-            var roomGroup = GameApplication.Instance.RoomConfig[CurrConfig.GroupName];
+            var roomGroup = GameApplication.Instance.RoomConfig[GameApplication.Instance.DungeonConfig.GroupName];
             roomGroup.InitWeight(new SeedRandom());
             var roomSplit = roomGroup.GetRandomRoom(DungeonRoomType.Event);
             roomPreinstall.RoomInfo.RoomSplit = roomSplit;
