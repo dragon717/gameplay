@@ -113,13 +113,13 @@ public class RandomPool
     //填充战斗房间
     public void FillRoomForAIWorld(RoomPreinstall preinstall, Vector2 point)
     {
-        var count = World.Random.RandomRangeInt(3, 10);
+        // 生成npc数量
+        var count = World.Random.RandomRangeInt(5, 15);
 
         // 生成视野多边形
         var visibilityPolygon = World.Random.GenerateCircularVisibilityPolygon(point, 100);
         var vertices = visibilityPolygon.vertices;
         var navigationPolygon = visibilityPolygon.polygons;
-
         // 生成随机点
         var positionArray = World.Random.GetRandomPositionInPolygon2(vertices, navigationPolygon, count);
 

@@ -368,10 +368,30 @@ public partial class DungeonManager : Node2D
         GameApplication.Instance.Cursor.SetGuiMode(false);
         yield return 0;
 
-        // 测试npc
-        var shopkeeper = ActivityObject.Create(PreinstallMarkManager.GetMarkConfig(ActivityObject.Ids.Id_shopBoss0001));
-        shopkeeper.Position = player.Position + new Vector2(100, 0);
-        shopkeeper.PutDown(RoomLayerEnum.YSortLayer);
+        // 测试npc（用敌人的精灵图）
+        for (int i = 0; i < 5; i++)
+        {
+            string idEnemy = "enemy" + (i + 1).ToString("D4"); // 如 enemy0001, enemy0002...
+            // 使用 AiRole 创建敌人实例
+            var enemy = ActivityObject.Create<AiRole>(idEnemy);
+            if (enemy == null)
+            {
+                GD.PrintErr($"Failed to create enemy with ID: {idEnemy}");
+                continue;
+            }
+
+            // 设置初始位置
+            enemy.Position = player.Position + new Vector2(100 + i * 50, i * 50);
+            // 放置到场景中
+            enemy.PutDown(RoomLayerEnum.YSortLayer);
+            // 初始化 AI 状态机
+            enemy.StateController.ChangeState(AIStateEnum.AiNormal);
+            // 必须绑定归属区域
+            if (player.AffiliationArea != null)
+            {
+                player.AffiliationArea.InsertItem(enemy);
+            }
+        }
 
         IsInDungeon = true;
 
