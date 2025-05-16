@@ -125,6 +125,11 @@ public class RandomPool
 
         var arr = new ActivityType[] { ActivityType.Enemy, ActivityType.Weapon, ActivityType.Prop };
         var weight = new int[] { 15, 2, 1 };
+
+        // Create and initialize a WeightRandom object  
+        // var weightRandom = new WeightRandom(World.Random);
+        // weightRandom.InitAdRewardWeight(weight);
+
         for (var i = 0; i < count; i++)
         {
             var tempWave = preinstall.GetOrCreateWave(World.Random.RandomRangeInt(0, 2));
