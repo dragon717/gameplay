@@ -149,6 +149,9 @@ public partial class GameApplication : Node2D, ICoroutine
 		//调试Ui
 		UiManager.Open_Debugger();
 
+		// 初始化网络管理器
+		NetworkManager.Initialize(this);
+
 		// 初始化鼠标
 		InitCursor();
 		//地牢管理器
