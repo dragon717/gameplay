@@ -29,13 +29,22 @@ namespace cs.proto {
             "IAMoCzIILmNzLlVzZXISGAoGZGVsZXRlGAMgAygLMgguY3MuVXNlciIqCgxT",
             "MkNfT3BPYmplY3QSGgoGb3BVc2VyGAEgASgLMgouY3MuT3BVc2VyIhkKC0My",
             "U19HZXRVc2VyEgoKAmlkGAEgASgEIiUKC1MyQ19HZXRVc2VyEhYKBHVzZXIY",
-            "ASABKAsyCC5jcy5Vc2VyKqMBCgJJRBILCgdJRF9aZXJvEAASFAoPSURfUzJD",
-            "X09wT2JqZWN0EOgHEhMKDklEX0MyU19HZXRVc2VyEJBOEhMKDklEX1MyQ19H",
-            "ZXRVc2VyEJFOEiUKH0lEX1MyQ19CQVNFX1RPT0xTX0hVR0VfTVNHX1BBQ0sQ",
-            "no0GEikKI0lEX1MyQ19CQVNFX1RPT0xTX0hVR0VfTVNHX1NVQl9QQUNLEJ+N",
-            "BjI6CgtVc2VyU2VydmljZRIrCgdHZXRVc2VyEg8uY3MuQzJTX0dldFVzZXIa",
-            "Dy5jcy5TMkNfR2V0VXNlckIUWgdUZXN0L2NzqgIIY3MucHJvdG9iBnByb3Rv",
-            "Mw=="));
+            "ASABKAsyCC5jcy5Vc2VyKtEECgJJRBILCgdJRF9aZXJvEAASFAoPSURfUzJD",
+            "X09wT2JqZWN0EOgHEhMKDklEX0MyU19HZXRVc2VyEJFOEhMKDklEX1MyQ19H",
+            "ZXRVc2VyEJJOEhAKC0lEX0MyU19CT1JOEPVOEhAKC0lEX1MyQ19CT1JOEPZO",
+            "EhAKC0lEX0MyU19ERUFEEPdOEhAKC0lEX1MyQ19ERUFEEPhOEhAKC0lEX0My",
+            "U19NT1ZFEPlVEhAKC0lEX1MyQ19NT1ZFEPpVEhkKFElEX0MyU19DVVRfRE9X",
+            "Tl9UUkVFEINWEhkKFElEX1MyQ19DVVRfRE9XTl9UUkVFEIRWEhwKF0lEX0My",
+            "U19CRV9DVVRfRE9XTl9UUkVFEIVWEhwKF0lEX1MyQ19CRV9DVVRfRE9XTl9U",
+            "UkVFEIZWEhEKDElEX0MyU19TTEVFUBCNVhIRCgxJRF9TMkNfU0xFRVAQjlYS",
+            "DwoKSURfQzJTX0VBVBCXVhIPCgpJRF9TMkNfRUFUEJhWEhMKDklEX0MyU19Q",
+            "SUNLX1VQEKFWEhMKDklEX1MyQ19QSUNLX1VQEKJWEhIKDUlEX0MyU19HUk9X",
+            "VEgQq1YSEgoNSURfUzJDX0dST1dUSBCsVhIZChRJRF9DMlNfQ09NUE9TRV9U",
+            "T09MUxC1VhIZChRJRF9TMkNfQ09NUE9TRV9UT09MUxC2VhIlCh9JRF9TMkNf",
+            "QkFTRV9UT09MU19IVUdFX01TR19QQUNLEJ6NBhIpCiNJRF9TMkNfQkFTRV9U",
+            "T09MU19IVUdFX01TR19TVUJfUEFDSxCfjQYyOgoLVXNlclNlcnZpY2USKwoH",
+            "R2V0VXNlchIPLmNzLkMyU19HZXRVc2VyGg8uY3MuUzJDX0dldFVzZXJCFFoH",
+            "VGVzdC9jc6oCCGNzLnByb3RvYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::cs.proto.ID), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -57,8 +66,59 @@ namespace cs.proto {
     /// <summary>
     /// 角色基本信息
     /// </summary>
-    [pbr::OriginalName("ID_C2S_GetUser")] C2SGetUser = 10000,
-    [pbr::OriginalName("ID_S2C_GetUser")] S2CGetUser = 10001,
+    [pbr::OriginalName("ID_C2S_GetUser")] C2SGetUser = 10001,
+    [pbr::OriginalName("ID_S2C_GetUser")] S2CGetUser = 10002,
+    /// <summary>
+    /// 出生
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_BORN")] C2SBorn = 10101,
+    [pbr::OriginalName("ID_S2C_BORN")] S2CBorn = 10102,
+    /// <summary>
+    /// 死亡
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_DEAD")] C2SDead = 10103,
+    [pbr::OriginalName("ID_S2C_DEAD")] S2CDead = 10104,
+    /// <summary>
+    /// ---------------角色交互
+    /// 移动
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_MOVE")] C2SMove = 11001,
+    [pbr::OriginalName("ID_S2C_MOVE")] S2CMove = 11002,
+    /// <summary>
+    /// 砍树
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_CUT_DOWN_TREE")] C2SCutDownTree = 11011,
+    [pbr::OriginalName("ID_S2C_CUT_DOWN_TREE")] S2CCutDownTree = 11012,
+    /// <summary>
+    /// 被砍伐
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_BE_CUT_DOWN_TREE")] C2SBeCutDownTree = 11013,
+    [pbr::OriginalName("ID_S2C_BE_CUT_DOWN_TREE")] S2CBeCutDownTree = 11014,
+    /// <summary>
+    /// 睡觉
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_SLEEP")] C2SSleep = 11021,
+    [pbr::OriginalName("ID_S2C_SLEEP")] S2CSleep = 11022,
+    /// <summary>
+    /// 吃东西
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_EAT")] C2SEat = 11031,
+    [pbr::OriginalName("ID_S2C_EAT")] S2CEat = 11032,
+    /// <summary>
+    /// 拾取
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_PICK_UP")] C2SPickUp = 11041,
+    [pbr::OriginalName("ID_S2C_PICK_UP")] S2CPickUp = 11042,
+    /// <summary>
+    /// 生长
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_GROWTH")] C2SGrowth = 11051,
+    [pbr::OriginalName("ID_S2C_GROWTH")] S2CGrowth = 11052,
+    /// <summary>
+    /// 合成工具
+    /// </summary>
+    [pbr::OriginalName("ID_C2S_COMPOSE_TOOLS")] C2SComposeTools = 11061,
+    [pbr::OriginalName("ID_S2C_COMPOSE_TOOLS")] S2CComposeTools = 11062,
     /// <summary>
     ///大消息
     /// </summary>
